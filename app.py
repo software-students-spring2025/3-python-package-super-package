@@ -1,3 +1,5 @@
 import pyjokes
 import pycowsay
-import mail
+import smtplib
+
+print('packages imported successfully')
