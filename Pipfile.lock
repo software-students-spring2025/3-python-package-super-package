@@ -1,0 +1,40 @@
+{
+    "_meta": {
+        "hash": {
+            "sha256": "e22e1546d6bac6127ff8d4bf2b559ae9f5c048c7b3e0d95a6320e3abbb13273b"
+        },
+        "pipfile-spec": 6,
+        "requires": {
+            "python_full_version": "3.9.21",
+            "python_version": "3.9"
+        },
+        "sources": [
+            {
+                "name": "pypi",
+                "url": "https://pypi.org/simple",
+                "verify_ssl": true
+            }
+        ]
+    },
+    "default": {
+        "pycowsay": {
+            "hashes": [
+                "sha256:5c03d8a9c7666ec102aaed4bbd6c7d35228489ce236f95f6e5d079529c6a5050",
+                "sha256:d112c4ce55b04dbc363c5a8957b80a0dc7459e864866d6e0202d15a95633bcf4"
+            ],
+            "index": "pypi",
+            "markers": "python_version >= '3.6'",
+            "version": "==0.0.0.2"
+        },
+        "pyjokes": {
+            "hashes": [
+                "sha256:12836e61bc7a2c1ff302604a040f0f63ac36c5c947c20319fcb5d1ab37bac46e",
+                "sha256:5735d31e973d5b6934b46b89431505733c3110f9b66eac0ff0be86f7f3646423"
+            ],
+            "index": "pypi",
+            "markers": "python_version >= '3.9' and python_version < '4.0'",
+            "version": "==0.8.3"
+        }
+    },
+    "develop": {}
+}
