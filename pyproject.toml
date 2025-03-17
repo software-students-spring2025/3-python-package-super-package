@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pytask-new"
+version = "0.1.0"
+description = "A simple task management package"
+readme = "README.md"
+authors = [
+    {name = "Xingjian", email = "xingjian@example.com"},
+    {name = "Lan", email = "lan@example.com"},
+    {name = "Yuquan", email = "yuquan@example.com"},
+    {name = "Yilei", email = "yilei@example.com"}
+]
+license = {file = "LICENSE"}
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/yourusername/pytask"
+"Bug Tracker" = "https://github.com/yourusername/pytask/issues"
+
+[tool.setuptools]
+packages = ["pytask_new"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"] 
