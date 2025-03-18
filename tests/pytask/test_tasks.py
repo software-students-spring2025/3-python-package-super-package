@@ -6,7 +6,7 @@ import os
 import json
 import pytest
 import datetime
-from pytask_new.tasks import add_task, update_task, remove_task
+from SuperTask_new.tasks import add_task, update_task, remove_task
 
 # Use a test file instead of the default one
 TEST_TASKS_FILE = "test_tasks_data.json"

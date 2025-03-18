@@ -10,7 +10,7 @@ import datetime
 import json
 import tempfile
 import os
-from pytask_new.tasks import add_task, update_task, remove_task
+from SuperTask_new.tasks import add_task, update_task, remove_task
 
 def main():
     """
