@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 pyjokes = "*"
 pycowsay = "*"
+pytask-new = {file = ".", editable = true}
 
 [dev-packages]
 
