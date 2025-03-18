@@ -10,9 +10,13 @@ import os
 import datetime
 from pathlib import Path
 from typing import Dict, List, Any, Optional, Union
+import smtplib
+import ssl
+from email.message import EmailMessage
+
 
 # Define the default location for the tasks data file
-DEFAULT_TASKS_FILE = os.path.expanduser("~/.pytask_data.json")
+DEFAULT_TASKS_FILE = os.path.expanduser("~/.superTask_data.json")
 
 
 def _get_tasks(tasks_file: Optional[str] = None) -> List[Dict[str, Any]]:
@@ -215,3 +219,107 @@ def remove_task(time: Union[str, datetime.datetime], event: str,
     
     # If we get here, the task wasn't found
     raise ValueError(f"No task found with time '{time_str}' and event '{event}'") 
+
+
+def reminder(
+    tasks_file: Optional[str] = None,
+    to_email: str = "",
+    deadline: int = 24,
+    from_email: str = "13601583609@163.com",
+    smtp_server: str = "smtp.163.com",
+    smtp_port: int = 465,
+    login: str = "13601583609@163.com",
+    password: str = "APYDOSTDPDUOEEHQ",
+    additional_text: str = "",
+    rank: str = "time" 
+) -> None:
+    """
+    Send a reminder email for upcoming tasks, sorted by time or value,
+    and displayed in an HTML table.
+
+    Args:
+        tasks_file:     path to the tasks file. Defaults to DEFAULT_TASKS_FILE.
+        to_email:       addressee's email address.
+        deadline:       deadline for reminder in hours. default 24.
+        from_email:     sender's email address. default set
+        smtp_server:    
+        smtp_port:     
+        login:          
+        password:       
+        additional_text:
+        rank:           How to rank the tasks. "time" for time, "value" for value. default "time".
+    """
+
+    print("DEBUG in tasks.py: smtplib.SMTP_SSL =", smtplib.SMTP_SSL)
+    tasks_file = tasks_file or DEFAULT_TASKS_FILE
+    current_time = datetime.datetime.now()
+    tasks = _get_tasks(tasks_file)
+    upcoming_tasks = []
+    for task in tasks:
+        task_time = datetime.datetime.fromisoformat(task["time"])
+        if not task.get("completed", False):
+            diff_hours = (task_time - current_time).total_seconds() / 3600
+            if diff_hours <= deadline:
+                upcoming_tasks.append(task)
+
+    if not upcoming_tasks:
+        return
+
+    if rank == "value":
+        upcoming_tasks.sort(key=lambda t: t["value"])
+    else:
+        upcoming_tasks.sort(key=lambda t: datetime.datetime.fromisoformat(t["time"]))
+
+    # build the email message
+    message = EmailMessage()
+    message["Subject"] = "Upcoming Task Reminder"
+    message["From"] = from_email
+    message["To"] = to_email
+
+    # pure text part of the email as a backup
+    message.set_content(
+        "You have upcoming tasks.\n"
+        f"Deadline window: {deadline} hours.\n"
+        f"{additional_text}\n\n"
+        "Please view the HTML part for a detailed table."
+    )
+    # HTML Format
+    html_content = f"""
+    <html>
+    <body>
+      <p>You have <b>{len(upcoming_tasks)}</b> upcoming task(s)
+         within the next {deadline} hour(s).<br>
+         {additional_text}</p>
+      <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse;">
+        <tr>
+          <th>Time</th>
+          <th>Event</th>
+          <th>Value</th>
+        </tr>
+    """
+
+    for task in upcoming_tasks:
+        html_content += f"""
+        <tr>
+          <td>{task['time']}</td>
+          <td>{task['event']}</td>
+          <td>{task['value']}</td>
+        </tr>
+        """
+
+    html_content += """
+      </table>
+    </body>
+    </html>
+    """
+
+    message.add_alternative(html_content, subtype="html")
+    # Send
+    context = ssl.create_default_context()
+    with smtplib.SMTP_SSL(smtp_server, smtp_port, context=context) as server:
+        server.login(login, password)
+        server.send_message(message)
+        server.quit()
+
+    print("Reminder email sent successfully.")
+    
