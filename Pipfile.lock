@@ -1,11 +1,10 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "e22e1546d6bac6127ff8d4bf2b559ae9f5c048c7b3e0d95a6320e3abbb13273b"
+            "sha256": "7609c8af7b9b71c248d719b367e26df6f20cdc07eed2eaa2e16ed2aec6178b19"
         },
         "pipfile-spec": 6,
         "requires": {
-            "python_full_version": "3.9.21",
             "python_version": "3.9"
         },
         "sources": [
@@ -34,6 +33,10 @@
             "index": "pypi",
             "markers": "python_version >= '3.9' and python_version < '4.0'",
             "version": "==0.8.3"
+        },
+        "pytask-new": {
+            "editable": true,
+            "file": "."
         }
     },
     "develop": {}
