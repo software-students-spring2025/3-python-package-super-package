@@ -3,12 +3,12 @@ requires = ["setuptools>=42", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "pytask-new"
+name = "superTask"
 version = "0.1.0"
 description = "A simple task management package"
 readme = "README.md"
 authors = [
-    {name = "Xingjian", email = "xingjian@example.com"},
+    {name = "Xingjian", email = "xz3954@nyu.edu"},
     {name = "Lan", email = "lan@example.com"},
     {name = "Yuquan", email = "yuquan@example.com"},
     {name = "Yilei", email = "yw6929@nyu.edu"}
@@ -26,11 +26,11 @@ classifiers = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/yourusername/pytask"
-"Bug Tracker" = "https://github.com/yourusername/pytask/issues"
+"Homepage" = "https://github.com/yourusername/superTask"
+"Bug Tracker" = "https://github.com/yourusername/superTask/issues"
 
 [tool.setuptools]
-packages = ["pytask_new"]
+packages = ["superTask"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"] 
