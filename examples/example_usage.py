@@ -10,13 +10,13 @@ import datetime
 import json
 import tempfile
 import os
-from superTask.tasks import add_task, update_task, remove_task
+from superTask.tasks import add_task, update_task, remove_task, reminder
 
 def main():
     """
     Demonstrate the core functionality of the Pytask package.
     """
-    print("Pytask Example - Core Task Management\n")
+    print("superTask Example - Core Task Management\n")
     
     # Create a temporary file that will be automatically deleted
     with tempfile.NamedTemporaryFile(delete=False) as temp_file:
@@ -63,6 +63,12 @@ def main():
             tasks = json.load(f)
             for task in tasks:
                 print(f"- {task['event']} at {task['time']} (value: {task['value']}, completed: {task['completed']})")
+
+        # Send a reminder email
+        print("\nSending reminder email...")
+        target_email = input("Enter your email address: ")
+        reminder(to_email=target_email, tasks_file=temp_tasks_file)
+        print("Reminder email sent successfully!")
     
     finally:
         # Clean up the temporary file
