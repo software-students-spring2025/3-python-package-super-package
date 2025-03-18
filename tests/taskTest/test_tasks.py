@@ -5,8 +5,10 @@ Tests for the tasks module in the Pytask package.
 import os
 import json
 import pytest
+from unittest.mock import patch, MagicMock
 import datetime
-from pytask_new.tasks import add_task, update_task, remove_task
+from superTask.tasks import add_task, update_task, remove_task, reminder
+
 
 # Use a test file instead of the default one
 TEST_TASKS_FILE = "test_tasks_data.json"
@@ -177,3 +179,128 @@ class TestRemoveTask:
         with open(TEST_TASKS_FILE, 'r') as f:
             saved_tasks = json.load(f)
             assert len(saved_tasks) == 0 
+
+@pytest.fixture
+def cleanup_test_file():
+    """Fixture to clean up the test file before and after tests."""
+    if os.path.exists(TEST_TASKS_FILE):
+        os.remove(TEST_TASKS_FILE)
+
+    yield
+
+    if os.path.exists(TEST_TASKS_FILE):
+        os.remove(TEST_TASKS_FILE)
+
+
+
+@pytest.fixture
+def mock_smtp():
+    """
+    Fixture to mock smtplib.SMTP_SSL so we don't actually send emails during tests.
+    Yields the mock instance, so we can assert calls, mail content, etc.
+    """
+    with patch("superTask.tasks.smtplib.SMTP_SSL", autospec=True) as mock_server_class:
+        # mock_server_class is the mocked class
+        # mock_server_instance is what reminder(...) will instantiate
+        mock_server_instance = mock_server_class.return_value.__enter__.return_value
+        yield mock_server_instance
+
+
+class TestReminder:
+    """Tests for the reminder function."""
+
+    def test_reminder_no_upcoming_tasks(self, mock_smtp, cleanup_test_file):
+        """
+        If there are no tasks within deadline, the function should return early
+        and not send any email.
+        """
+        # No tasks added => no upcoming tasks
+        reminder(tasks_file=TEST_TASKS_FILE, to_email="test@example.com")
+
+        # The reminder function returns early; mock_smtp.send_message should NOT be called
+        mock_smtp.send_message.assert_not_called()
+
+    def test_reminder_with_upcoming_tasks(self, mock_smtp, cleanup_test_file):
+        """
+        If we have tasks within the deadline, an email should be sent.
+        We'll verify that send_message was called and the email content includes the tasks.
+        """
+        # Add a task 1 hour in the future
+        future_time = (datetime.datetime.now() + datetime.timedelta(hours=1)).isoformat()
+        add_task(future_time, "Task A", 10, TEST_TASKS_FILE)
+
+        # Call reminder with deadline=2 => 2 hours
+        reminder(
+            tasks_file=TEST_TASKS_FILE,
+            to_email="test@example.com",
+            deadline=2
+        )
+
+        # Expect one call to send_message
+        mock_smtp.send_message.assert_called_once()
+        sent_message = mock_smtp.send_message.call_args[0][0]  # the first positional arg is the EmailMessage
+
+        # Check the email subject, 'From', 'To'
+        assert sent_message["Subject"] == "Upcoming Task Reminder"
+        assert sent_message["From"] == "13601583609@163.com"  # default from_email
+        assert sent_message["To"] == "test@example.com"
+
+        # Check if HTML part has "Task A" in it
+        payloads = sent_message.get_payload()  # returns list of message parts
+        # The second part should be the HTML (subtype="html") if set_content was the plain text
+        # and add_alternative was the HTML. Let's find it:
+        html_part = None
+        for part in payloads:
+            if part.get_content_type() == "text/html":
+                html_part = part
+                break
+
+        assert html_part is not None, "No HTML alternative found in the email."
+        html_content = html_part.get_payload(decode=True).decode("utf-8")
+
+        assert "Task A" in html_content, "HTML content should include 'Task A'"
+
+    def test_reminder_deadline_too_short(self, mock_smtp, cleanup_test_file):
+        """
+        If tasks are in the future but beyond the set deadline, no email should be sent.
+        """
+        # Add a task 5 hours in the future
+        future_time = (datetime.datetime.now() + datetime.timedelta(hours=5)).isoformat()
+        add_task(future_time, "Task B", 10, TEST_TASKS_FILE)
+
+        # deadline=2, so 5-hour-later tasks are not within upcoming
+        reminder(tasks_file=TEST_TASKS_FILE, to_email="test@example.com", deadline=2)
+
+        # Should not send email
+        mock_smtp.send_message.assert_not_called()
+
+    def test_reminder_rank_value(self, mock_smtp, cleanup_test_file):
+        """
+        Test that rank='value' sorts tasks by 'value' in ascending order in the HTML table.
+        We'll check the order of tasks in the generated HTML.
+        """
+        now = datetime.datetime.now()
+        # Add 2 tasks within 1 hour => both will be reminded
+        add_task((now + datetime.timedelta(minutes=30)).isoformat(), "Task C", 20, TEST_TASKS_FILE)
+        add_task((now + datetime.timedelta(minutes=30)).isoformat(), "Task D", 5,  TEST_TASKS_FILE)
+
+        # rank="value" => we expect 'Task D' (value=5) to appear before 'Task C' (value=20)
+        reminder(tasks_file=TEST_TASKS_FILE, to_email="test@example.com", rank="value")
+
+        mock_smtp.send_message.assert_called_once()
+        sent_message = mock_smtp.send_message.call_args[0][0]
+        payloads = sent_message.get_payload()
+        html_part = None
+        for part in payloads:
+            if part.get_content_type() == "text/html":
+                html_part = part
+                break
+
+        assert html_part is not None, "No HTML part found in the email"
+        html_content = html_part.get_payload(decode=True).decode("utf-8")
+
+        # Check the order: we want 'Task D' row to appear before 'Task C'
+        index_d = html_content.find("Task D")
+        index_c = html_content.find("Task C")
+
+        assert index_d < index_c, "Tasks should be sorted by value => Task D (value=5) comes before Task C (value=20)."
