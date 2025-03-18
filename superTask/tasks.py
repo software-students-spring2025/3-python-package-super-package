@@ -221,6 +221,58 @@ def remove_task(time: Union[str, datetime.datetime], event: str,
     raise ValueError(f"No task found with time '{time_str}' and event '{event}'") 
 
 
+def complete(event: str, tasks_file: Optional[str] = None) -> Dict[str, Any]:
+    """
+    Marks a task as completed by its event name.
+
+    Args:
+        event (str): The name/description of the task.
+        tasks_file (Optional[str]): Path to the tasks file.
+
+    Returns:
+        Dict[str, Any]: The updated task.
+
+    Raises:
+        ValueError: If no matching task is found.
+    """
+    tasks = _get_tasks(tasks_file)
+    
+    for task in tasks:
+        if task["event"] == event:
+            task["completed"] = True  # Mark as completed
+            _save_tasks(tasks, tasks_file)
+            return task  # Return the updated task
+
+    raise ValueError(f"No task found with event '{event}'")
+
+
+def list_tasks(order_by: str = "time", tasks_file: Optional[str] = None) -> List[Dict[str, Any]]:
+    """
+    Lists tasks sorted by deadline (time) or value.
+
+    Args:
+        order_by (str): Sorting order - "time" (default) or "value".
+        tasks_file (Optional[str]): Path to the tasks file.
+
+    Returns:
+        List[Dict[str, Any]]: Sorted list of tasks.
+
+    Raises:
+        ValueError: If an invalid sorting key is provided.
+    """
+    tasks = _get_tasks(tasks_file)
+    
+    if order_by == "time":
+        tasks.sort(key=lambda task: task["time"])  # Sort by deadline
+    elif order_by == "value":
+        tasks.sort(key=lambda task: task["value"], reverse=True)  # Sort by highest value first
+    else:
+        raise ValueError("Invalid sort order. Choose 'time' or 'value'.")
+
+    return tasks
+
+
+
 def reminder(
     tasks_file: Optional[str] = None,
     to_email: str = "",
