@@ -157,13 +157,11 @@ pytask/                            # Root project directory
 
 ### Key Modules
 
-- **tasks.py**: Core module for adding, updating, and removing tasks. Tasks are stored as JSON with timestamps, descriptions, values, and completion status.
-  
-- **list.py**: Module for listing tasks with various sorting and filtering options, and for marking tasks as completed.
-  
-- **reminder.py**: Module for setting up and sending email reminders for upcoming tasks.
-  
-- **reward.py**: Module for providing motivational rewards when users complete tasks of sufficient value.
+- **tasks.py**: 
+- Core module for adding, updating, and removing tasks. Tasks are stored as JSON with timestamps, descriptions, values, and completion status.
+- Module for listing tasks with various sorting and filtering options, and for marking tasks as completed.
+- Module for setting up and sending email reminders for upcoming tasks.
+- Module for providing motivational rewards when users complete tasks of sufficient value.
 
 ## Data Storage
 
