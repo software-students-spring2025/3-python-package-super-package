@@ -1,7 +1,5 @@
 # Pytask
 
-![Python Package](https://github.com/yourusername/pytask/actions/workflows/python-package.yml/badge.svg)
-
 A simple, lightweight Python package for managing tasks with support for prioritization, reminders, and rewards. Pytask provides a clean API for organizing your tasks, reminding you of upcoming deadlines, and rewarding your accomplishments.
 
 ## Features
@@ -184,7 +182,7 @@ You can specify a custom file path when using the API functions.
 
 ## Contributors
 
-- [Xingjian](https://github.com/xingjian) - Core Task Management
+- [Xingjian](https://github.com/ScottZXJ123) - Core Task Management
 - [Lan](https://github.com/lan) - Task Listing and Completion
 - [Yuquan](https://github.com/yuquan) - Email Reminders
 - [Yilei](https://github.com/ShadderD) - Reward System
