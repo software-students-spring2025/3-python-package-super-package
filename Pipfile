@@ -6,9 +6,10 @@ name = "pypi"
 [packages]
 pyjokes = "*"
 pycowsay = "*"
-pytask-new = {file = ".", editable = true}
+supertask = {file = ".", editable = true}
 
 [dev-packages]
+pytest = "*"
 
 [requires]
 python_version = "3.9"
