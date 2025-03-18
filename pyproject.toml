@@ -11,7 +11,7 @@ authors = [
     {name = "Xingjian", email = "xingjian@example.com"},
     {name = "Lan", email = "lan@example.com"},
     {name = "Yuquan", email = "yuquan@example.com"},
-    {name = "Yilei", email = "yilei@example.com"}
+    {name = "Yilei", email = "yw6929@nyu.edu"}
 ]
 license = {file = "LICENSE"}
 requires-python = ">=3.7"

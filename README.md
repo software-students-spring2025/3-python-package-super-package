@@ -187,7 +187,7 @@ You can specify a custom file path when using the API functions.
 - [Xingjian](https://github.com/xingjian) - Core Task Management
 - [Lan](https://github.com/lan) - Task Listing and Completion
 - [Yuquan](https://github.com/yuquan) - Email Reminders
-- [Yilei](https://github.com/yilei) - Reward System
+- [Yilei](https://github.com/ShadderD) - Reward System
 
 ## License
 
