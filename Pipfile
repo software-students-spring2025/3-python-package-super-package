@@ -4,8 +4,8 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pyjokes = "*"
 pycowsay = "*"
+pyjokes = "*"
 
 [dev-packages]
 pytest = "*"

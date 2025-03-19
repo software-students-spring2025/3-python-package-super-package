@@ -69,10 +69,10 @@ mark_completed("2023-06-15T09:00:00", "Morning meeting")
 ### Reminder System 
 
 ```python
-from supertask.reminder import reminder_mail
+from supertask.tasks import reminder
 
 # Configure email reminders
-reminder_mail("your_email@example.com", days_ahead=1)
+
 ```
 
 ### Reward System (To be implemented by Yilei)
