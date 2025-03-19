@@ -7,7 +7,8 @@ import json
 import pytest
 from unittest.mock import patch, MagicMock
 import datetime
-from superTask.tasks import add_task, update_task, remove_task, reminder
+import pyjokes
+from superTask.tasks import add_task, update_task, remove_task, reminder, reward
 
 
 # Use a test file instead of the default one
@@ -304,3 +305,192 @@ class TestReminder:
         index_c = html_content.find("Task C")
 
         assert index_d < index_c, "Tasks should be sorted by value => Task D (value=5) comes before Task C (value=20)."
+
+
+class TestReward:
+    """Tests for the reward function."""
+
+    def test_reward_no_completed_tasks(self, mock_smtp, cleanup_test_file):
+        """
+        If there are no completed tasks, the function should return False
+        and not send any email.
+        """
+        # Add a task but don't mark it as completed
+        add_task("2023-01-01T10:00:00", "Test Event", 5, TEST_TASKS_FILE)
+        
+        # Call reward with a threshold of 1
+        result = reward(
+            threshold_value=1,
+            tasks_file=TEST_TASKS_FILE,
+            to_email="test@example.com"
+        )
+        
+        # Should return False since no tasks are completed
+        assert result is False
+        
+        # No email should be sent
+        mock_smtp.send_message.assert_not_called()
+
+    def test_reward_threshold_not_met(self, mock_smtp, cleanup_test_file):
+        """
+        If completed tasks' total value is below threshold, the function should return False
+        and not send any email.
+        """
+        # Add a task
+        add_task("2023-01-01T10:00:00", "Test Event", 5, TEST_TASKS_FILE)
+        
+        # Manually mark the task as completed
+        with open(TEST_TASKS_FILE, 'r') as f:
+            tasks = json.load(f)
+        tasks[0]["completed"] = True
+        with open(TEST_TASKS_FILE, 'w') as f:
+            json.dump(tasks, f)
+            
+        # Call reward with a threshold higher than the task value
+        result = reward(
+            threshold_value=10,
+            tasks_file=TEST_TASKS_FILE,
+            to_email="test@example.com"
+        )
+        
+        # Should return False since threshold not met
+        assert result is False
+        
+        # No email should be sent
+        mock_smtp.send_message.assert_not_called()
+
+    def test_reward_threshold_met(self, mock_smtp, cleanup_test_file):
+        """
+        If completed tasks' total value meets threshold, an email should be sent.
+        """
+        # Add two tasks
+        add_task("2023-01-01T10:00:00", "Task 1", 3, TEST_TASKS_FILE)
+        add_task("2023-01-01T11:00:00", "Task 2", 7, TEST_TASKS_FILE)
+        
+        # Manually mark the tasks as completed
+        with open(TEST_TASKS_FILE, 'r') as f:
+            tasks = json.load(f)
+        for task in tasks:
+            task["completed"] = True
+        with open(TEST_TASKS_FILE, 'w') as f:
+            json.dump(tasks, f)
+            
+        # Call reward with a threshold equal to total value
+        result = reward(
+            threshold_value=10,
+            tasks_file=TEST_TASKS_FILE,
+            to_email="test@example.com",
+            reward_message="Great job!",
+            include_joke=False  # Disable joke for testing simplicity
+        )
+        
+        # Should return True since threshold is met
+        assert result is True
+        
+        # An email should be sent
+        mock_smtp.send_message.assert_called_once()
+        sent_message = mock_smtp.send_message.call_args[0][0]
+        
+        # Check email properties
+        assert sent_message["Subject"] == "Goal Achievement Reward: 10 points"
+        assert sent_message["To"] == "test@example.com"
+        
+        # Check content
+        payloads = sent_message.get_payload()
+        html_part = None
+        for part in payloads:
+            if part.get_content_type() == "text/html":
+                html_part = part
+                break
+                
+        assert html_part is not None
+        html_content = html_part.get_payload(decode=True).decode("utf-8")
+        
+        # Check required content in HTML
+        assert "Great job!" in html_content
+        assert "10" in html_content and "points" in html_content
+        assert "Task 1" in html_content
+        assert "Task 2" in html_content
+        
+    def test_reward_with_joke(self, mock_smtp, cleanup_test_file, monkeypatch):
+        """
+        Test that joke is included in the email when include_joke is True.
+        """
+        # Mock pyjokes.get_joke() to return a predictable joke
+        mock_joke = MagicMock(return_value="Why did the programmer quit his job? Because he didn't get arrays.")
+        monkeypatch.setattr("superTask.tasks.pyjokes.get_joke", mock_joke)
+        
+        # Add a task
+        add_task("2023-01-01T10:00:00", "Test Event", 15, TEST_TASKS_FILE)
+        
+        # Mark as completed
+        with open(TEST_TASKS_FILE, 'r') as f:
+            tasks = json.load(f)
+        tasks[0]["completed"] = True
+        with open(TEST_TASKS_FILE, 'w') as f:
+            json.dump(tasks, f)
+            
+        # Call reward with include_joke=True
+        result = reward(
+            threshold_value=10,
+            tasks_file=TEST_TASKS_FILE,
+            to_email="test@example.com",
+            include_joke=True
+        )
+        
+        assert result is True
+        mock_smtp.send_message.assert_called_once()
+        
+        sent_message = mock_smtp.send_message.call_args[0][0]
+        payloads = sent_message.get_payload()
+        
+        html_part = None
+        for part in payloads:
+            if part.get_content_type() == "text/html":
+                html_part = part
+                break
+                
+        html_content = html_part.get_payload(decode=True).decode("utf-8")
+        
+        # Check that the joke is in the HTML content
+        assert "Why did the programmer quit his job?" in html_content
+        
+    def test_reward_without_completed_tasks_list(self, mock_smtp, cleanup_test_file):
+        """
+        Test that the completed tasks table is not included when include_completed_tasks is False.
+        """
+        # Add a task and mark as completed
+        add_task("2023-01-01T10:00:00", "Test Event", 15, TEST_TASKS_FILE)
+        
+        with open(TEST_TASKS_FILE, 'r') as f:
+            tasks = json.load(f)
+        tasks[0]["completed"] = True
+        with open(TEST_TASKS_FILE, 'w') as f:
+            json.dump(tasks, f)
+            
+        # Call reward with include_completed_tasks=False
+        result = reward(
+            threshold_value=10,
+            tasks_file=TEST_TASKS_FILE,
+            to_email="test@example.com",
+            include_completed_tasks=False,
+            include_joke=False
+        )
+        
+        assert result is True
+        mock_smtp.send_message.assert_called_once()
+        
+        sent_message = mock_smtp.send_message.call_args[0][0]
+        payloads = sent_message.get_payload()
+        
+        html_part = None
+        for part in payloads:
+            if part.get_content_type() == "text/html":
+                html_part = part
+                break
+                
+        html_content = html_part.get_payload(decode=True).decode("utf-8")
+        
+        # Check that the table and completed tasks heading are NOT in the content
+        assert "<table" not in html_content
+        assert "Your Completed Tasks" not in html_content
