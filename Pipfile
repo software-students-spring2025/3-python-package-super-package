@@ -6,7 +6,6 @@ name = "pypi"
 [packages]
 pyjokes = "*"
 pycowsay = "*"
-supertask = {file = ".", editable = true}
 
 [dev-packages]
 pytest = "*"

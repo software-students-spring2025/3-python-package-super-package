@@ -22,7 +22,7 @@ pip install supertask
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/supertask.git
+git clone https://github.com/software-students-spring2025/3-python-package-super-package.git
 cd supertask
 
 # Install in development mode
@@ -66,7 +66,7 @@ upcoming_tasks = list_tasks(before="2023-07-01T00:00:00")
 mark_completed("2023-06-15T09:00:00", "Morning meeting")
 ```
 
-### Reminder System (To be implemented by Yuquan)
+### Reminder System 
 
 ```python
 from supertask.reminder import reminder_mail
