@@ -22,7 +22,7 @@ pip install supertask
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/supertask.git
+git clone https://github.com/software-students-spring2025/3-python-package-super-package.git
 cd supertask
 
 # Install in development mode
@@ -91,18 +91,18 @@ print(motivational_message)  # Prints a joke or congratulatory message
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/supertask.git
+git clone https://github.com/software-students-spring2025/3-python-package-super-package.git
 cd supertask
 
 # Create and activate a virtual environment
-python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+pipenv --python 3.9
+pipenv shell
 
 # Install package in development mode
-pip install -e .
+pipenv install -e .
 
 # Install development dependencies
-pip install pytest build twine
+pipenv install pytest build twine
 
 # Run tests
 pytest
@@ -111,9 +111,6 @@ pytest
 ### Development Workflow
 
 1. Create a feature branch for your work
-   ```bash
-   git checkout -b feature/your-feature-name
-   ```
 
 2. Implement your changes and add tests
 
@@ -130,10 +127,7 @@ pytest
 supertask/                         # Root project directory
 ├── supertask/                     # Main package source code
 │   ├── __init__.py                # Package initialization and exports
-│   ├── tasks.py                   # Core task management (Xingjian)
-│   ├── list.py                    # Task listing and completion tracking (Lan)
-│   ├── reminder.py                # Email reminder system (Yuquan)
-│   ├── reward.py                  # Motivational reward system (Yilei)
+│   ├── tasks.py                   # Core task management; Task listing and completion tracking; Email reminder system; Motivational reward system
 │   ├── utils/                     # Utility modules
 │   │   ├── __init__.py            # Package initialization
 │   │   ├── date_utils.py          # Date/time handling utilities
@@ -190,13 +184,14 @@ supertask/                         # Root project directory
 
 ### Key Modules
 
-- **tasks.py**: Core module for adding, updating, and removing tasks. Tasks are stored as JSON with timestamps, descriptions, values, and completion status.
+- **tasks.py**: 
+- Core module for adding, updating, and removing tasks. Tasks are stored as JSON with timestamps, descriptions, values, and completion status.
+
+- Module for listing tasks with various sorting and filtering options, and for marking tasks as completed.
   
-- **list.py**: Module for listing tasks with various sorting and filtering options, and for marking tasks as completed.
+- Module for setting up and sending email reminders for upcoming tasks.
   
-- **reminder.py**: Module for setting up and sending email reminders for upcoming tasks.
-  
-- **reward.py**: Module for providing motivational rewards when users complete tasks of sufficient value.
+- Module for providing motivational rewards when users complete tasks of sufficient value.
 
 ## Data Storage
 
@@ -216,8 +211,8 @@ You can specify a custom file path when using the API functions.
 ## Contributors
 
 - [Xingjian](https://github.com/ScottZXJ123) - Core Task Management
-- [Lan](https://github.com/lan) - Task Listing and Completion
-- [Yuquan](https://github.com/yuquan) - Email Reminders
+- [Lan](https://github.com/ziiiimu) - Task Listing and Completion
+- [Yuquan](https://github.com/N-A-E-S) - Email Reminders
 - [Yilei](https://github.com/ShadderD) - Reward System
 
 ## License
