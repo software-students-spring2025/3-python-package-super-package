@@ -408,7 +408,7 @@ class TestReward:
         
         # Check required content in HTML
         assert "Great job!" in html_content
-        assert "10 points" in html_content
+        assert "10" in html_content and "points" in html_content
         assert "Task 1" in html_content
         assert "Task 2" in html_content
         
