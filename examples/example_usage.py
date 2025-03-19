@@ -10,13 +10,13 @@ import datetime
 import json
 import tempfile
 import os
-from superTask.tasks import add_task, update_task, remove_task, complete, list_tasks, reminder, reward
+from ZephyrTask.tasks import add_task, update_task, remove_task, complete, list_tasks, reminder, reward
 
 def main():
     """
     Demonstrate the core functionality of the Pytask package.
     """
-    print("superTask Example - Core Task Management\n")
+    print("ZephyrTask Example - Core Task Management\n")
     
     # Create a temporary file that will be automatically deleted
     with tempfile.NamedTemporaryFile(delete=False) as temp_file:

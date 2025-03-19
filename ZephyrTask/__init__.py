@@ -7,7 +7,7 @@ providing rewards for completing tasks.
 """
 
 # Core task management
-from superTask.tasks import add_task, update_task, remove_task
+from ZephyrTask.tasks import add_task, update_task, remove_task
 
 # Uncomment these imports when the corresponding modules are implemented
 # from pytask_new.list import list_tasks, mark_completed

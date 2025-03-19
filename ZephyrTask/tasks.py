@@ -17,7 +17,7 @@ from email.message import EmailMessage
 
 
 # Define the default location for the tasks data file
-DEFAULT_TASKS_FILE = os.path.expanduser("~/.superTask_data.json")
+DEFAULT_TASKS_FILE = os.path.expanduser("~/.ZephyrTask_data.json")
 
 
 def _get_tasks(tasks_file: Optional[str] = None) -> List[Dict[str, Any]]:

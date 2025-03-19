@@ -1,6 +1,6 @@
-# Supertask
+# ZephyrTask
 
-A simple, lightweight Python package for managing tasks with support for prioritization, reminders, and rewards. Supertask provides a clean API for organizing your tasks, reminding you of upcoming deadlines, and rewarding your accomplishments.
+A simple, lightweight Python package for managing tasks with support for prioritization, reminders, and rewards. ZephyrTask provides a clean API for organizing your tasks, reminding you of upcoming deadlines, and rewarding your accomplishments.
 
 ## Features
 
@@ -15,7 +15,7 @@ A simple, lightweight Python package for managing tasks with support for priorit
 ### From PyPI (Recommended)
 
 ```bash
-pip install supertask
+pip install ZephyrTask
 ```
 
 ### From Source
@@ -23,7 +23,7 @@ pip install supertask
 ```bash
 # Clone the repository
 git clone https://github.com/software-students-spring2025/3-python-package-super-package.git
-cd supertask
+cd ZephyrTask
 
 # Install in development mode
 pip install -e .
@@ -35,7 +35,7 @@ pip install -e .
 
 ```python
 import datetime
-from supertask.tasks import add_task, update_task, remove_task
+from ZephyrTask.tasks import add_task, update_task, remove_task
 
 # Add a task with a string time (ISO format)
 add_task("2023-06-15T09:00:00", "Morning meeting", 5)
@@ -54,7 +54,7 @@ remove_task("2023-06-15T09:00:00", "Morning meeting")
 ### Task Listing (To be implemented by Lan)
 
 ```python
-from supertask.list import list_tasks, mark_completed
+from ZephyrTask.list import list_tasks, mark_completed
 
 # List all tasks sorted by time
 tasks = list_tasks(sort_by="time")
@@ -69,7 +69,7 @@ mark_completed("2025-03-15T09:00:00", "Morning meeting")
 ### Reminder System 
 
 ```python
-from supertask.tasks import reminder
+from ZephyrTask.reminder import reminder_mail
 
 # Configure email reminders
 
@@ -78,7 +78,7 @@ from supertask.tasks import reminder
 ### Reward System (To be implemented by Yilei)
 
 ```python
-from supertask.reward import reward
+from ZephyrTask.reward import reward
 
 # Check rewards when reaching a value threshold
 motivational_message = reward(20)
@@ -91,18 +91,18 @@ print(motivational_message)  # Prints a joke or congratulatory message
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/supertask.git
-cd supertask
+git clone https://github.com/software-students-spring2025/3-python-package-super-package.git
+cd ZephyrTask
 
 # Create and activate a virtual environment
-python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+pipenv --python 3.9
+pipenv shell
 
 # Install package in development mode
-pip install -e .
+pipenv install -e .
 
 # Install development dependencies
-pip install pytest build twine
+pipenv install pytest build twine
 
 # Run tests
 pytest
@@ -111,9 +111,6 @@ pytest
 ### Development Workflow
 
 1. Create a feature branch for your work
-   ```bash
-   git checkout -b feature/your-feature-name
-   ```
 
 2. Implement your changes and add tests
 
@@ -127,13 +124,10 @@ pytest
 ## Project Structure
 
 ```
-supertask/                         # Root project directory
-├── supertask/                     # Main package source code
+ZephyrTask/                         # Root project directory
+├── ZephyrTask/                     # Main package source code
 │   ├── __init__.py                # Package initialization and exports
-│   ├── tasks.py                   # Core task management (Xingjian)
-│   ├── list.py                    # Task listing and completion tracking (Lan)
-│   ├── reminder.py                # Email reminder system (Yuquan)
-│   ├── reward.py                  # Motivational reward system (Yilei)
+│   ├── tasks.py                   # Core task management; Task listing and completion tracking; Email reminder system; Motivational reward system
 │   ├── utils/                     # Utility modules
 │   │   ├── __init__.py            # Package initialization
 │   │   ├── date_utils.py          # Date/time handling utilities
@@ -177,7 +171,7 @@ supertask/                         # Root project directory
 │       └── publish.yml            # Workflow for publishing to PyPI
 │
 ├── .venv/                         # Virtual environment (not in version control)
-├── supertask.egg-info/            # Package metadata (not in version control)
+├── ZephyrTask.egg-info/            # Package metadata (not in version control)
 ├── .pytest_cache/                 # Pytest cache (not in version control)
 │
 ├── pyproject.toml                 # Project configuration (PEP 517/518)
@@ -190,17 +184,18 @@ supertask/                         # Root project directory
 
 ### Key Modules
 
-- **tasks.py**: Core module for adding, updating, and removing tasks. Tasks are stored as JSON with timestamps, descriptions, values, and completion status.
+- **tasks.py**: 
+- Core module for adding, updating, and removing tasks. Tasks are stored as JSON with timestamps, descriptions, values, and completion status.
+
+- Module for listing tasks with various sorting and filtering options, and for marking tasks as completed.
   
-- **list.py**: Module for listing tasks with various sorting and filtering options, and for marking tasks as completed.
+- Module for setting up and sending email reminders for upcoming tasks.
   
-- **reminder.py**: Module for setting up and sending email reminders for upcoming tasks.
-  
-- **reward.py**: Module for providing motivational rewards when users complete tasks of sufficient value.
+- Module for providing motivational rewards when users complete tasks of sufficient value.
 
 ## Data Storage
 
-By default, tasks are stored in a JSON file at `~/.supertask_data.json`. Each task has the following structure:
+By default, tasks are stored in a JSON file at `~/.ZephyrTask_data.json`. Each task has the following structure:
 
 ```json
 {
@@ -216,7 +211,7 @@ You can specify a custom file path when using the API functions.
 ## Contributors
 
 - [Xingjian](https://github.com/ScottZXJ123) - Core Task Management
-- [Lan](https://github.com/lan) - Task Listing and Completion
+- [Lan](https://github.com/ziiiimu) - Task Listing and Completion
 - [Yuquan](https://github.com/N-A-E-S) - Email Reminders
 - [Yilei](https://github.com/ShadderD) - Reward System
 
