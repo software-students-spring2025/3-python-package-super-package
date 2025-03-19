@@ -60,10 +60,10 @@ from supertask.list import list_tasks, mark_completed
 tasks = list_tasks(sort_by="time")
 
 # List tasks before a specific date
-upcoming_tasks = list_tasks(before="2023-07-01T00:00:00")
+upcoming_tasks = list_tasks(before="2025-03-01T00:00:00")
 
 # Mark a task as completed
-mark_completed("2023-06-15T09:00:00", "Morning meeting")
+mark_completed("2025-03-15T09:00:00", "Morning meeting")
 ```
 
 ### Reminder System 
@@ -217,7 +217,7 @@ You can specify a custom file path when using the API functions.
 
 - [Xingjian](https://github.com/ScottZXJ123) - Core Task Management
 - [Lan](https://github.com/lan) - Task Listing and Completion
-- [Yuquan](https://github.com/yuquan) - Email Reminders
+- [Yuquan](https://github.com/N-A-E-S) - Email Reminders
 - [Yilei](https://github.com/ShadderD) - Reward System
 
 ## License
