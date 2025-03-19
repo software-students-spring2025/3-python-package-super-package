@@ -9,7 +9,7 @@ from unittest.mock import patch, MagicMock
 import datetime
 import pyjokes
 import tempfile
-from superTask.tasks import add_task, update_task, remove_task, reminder, reward, complete, list_tasks, _get_tasks
+from ZephyrTask.tasks import add_task, update_task, remove_task, reminder, reward, complete, list_tasks, _get_tasks
 
 
 # Use a test file instead of the default one
@@ -201,7 +201,7 @@ def mock_smtp():
     Fixture to mock smtplib.SMTP_SSL so we don't actually send emails during tests.
     Yields the mock instance, so we can assert calls, mail content, etc.
     """
-    with patch("superTask.tasks.smtplib.SMTP_SSL", autospec=True) as mock_server_class:
+    with patch("ZephyrTask.tasks.smtplib.SMTP_SSL", autospec=True) as mock_server_class:
         # mock_server_class is the mocked class
         # mock_server_instance is what reminder(...) will instantiate
         mock_server_instance = mock_server_class.return_value.__enter__.return_value
@@ -419,7 +419,7 @@ class TestReward:
         """
         # Mock pyjokes.get_joke() to return a predictable joke
         mock_joke = MagicMock(return_value="Why did the programmer quit his job? Because he didn't get arrays.")
-        monkeypatch.setattr("superTask.tasks.pyjokes.get_joke", mock_joke)
+        monkeypatch.setattr("ZephyrTask.tasks.pyjokes.get_joke", mock_joke)
         
         # Add a task
         add_task("2023-01-01T10:00:00", "Test Event", 15, TEST_TASKS_FILE)

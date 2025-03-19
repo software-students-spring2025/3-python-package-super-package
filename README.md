@@ -1,6 +1,6 @@
-# Supertask
+# ZephyrTask
 
-A simple, lightweight Python package for managing tasks with support for prioritization, reminders, and rewards. Supertask provides a clean API for organizing your tasks, reminding you of upcoming deadlines, and rewarding your accomplishments.
+A simple, lightweight Python package for managing tasks with support for prioritization, reminders, and rewards. ZephyrTask provides a clean API for organizing your tasks, reminding you of upcoming deadlines, and rewarding your accomplishments.
 
 ## Features
 
@@ -15,7 +15,7 @@ A simple, lightweight Python package for managing tasks with support for priorit
 ### From PyPI (Recommended)
 
 ```bash
-pip install supertask
+pip install ZephyrTask
 ```
 
 ### From Source
@@ -23,7 +23,7 @@ pip install supertask
 ```bash
 # Clone the repository
 git clone https://github.com/software-students-spring2025/3-python-package-super-package.git
-cd supertask
+cd ZephyrTask
 
 # Install in development mode
 pip install -e .
@@ -35,7 +35,7 @@ pip install -e .
 
 ```python
 import datetime
-from supertask.tasks import add_task, update_task, remove_task
+from ZephyrTask.tasks import add_task, update_task, remove_task
 
 # Add a task with a string time (ISO format)
 add_task("2023-06-15T09:00:00", "Morning meeting", 5)
@@ -54,7 +54,7 @@ remove_task("2023-06-15T09:00:00", "Morning meeting")
 ### Task Listing (To be implemented by Lan)
 
 ```python
-from supertask.list import list_tasks, mark_completed
+from ZephyrTask.list import list_tasks, mark_completed
 
 # List all tasks sorted by time
 tasks = list_tasks(sort_by="time")
@@ -69,7 +69,7 @@ mark_completed("2023-06-15T09:00:00", "Morning meeting")
 ### Reminder System (To be implemented by Yuquan)
 
 ```python
-from supertask.reminder import reminder_mail
+from ZephyrTask.reminder import reminder_mail
 
 # Configure email reminders
 reminder_mail("your_email@example.com", days_ahead=1)
@@ -78,7 +78,7 @@ reminder_mail("your_email@example.com", days_ahead=1)
 ### Reward System (To be implemented by Yilei)
 
 ```python
-from supertask.reward import reward
+from ZephyrTask.reward import reward
 
 # Check rewards when reaching a value threshold
 motivational_message = reward(20)
@@ -92,7 +92,7 @@ print(motivational_message)  # Prints a joke or congratulatory message
 ```bash
 # Clone the repository
 git clone https://github.com/software-students-spring2025/3-python-package-super-package.git
-cd supertask
+cd ZephyrTask
 
 # Create and activate a virtual environment
 pipenv --python 3.9
@@ -124,8 +124,8 @@ pytest
 ## Project Structure
 
 ```
-supertask/                         # Root project directory
-├── supertask/                     # Main package source code
+ZephyrTask/                         # Root project directory
+├── ZephyrTask/                     # Main package source code
 │   ├── __init__.py                # Package initialization and exports
 │   ├── tasks.py                   # Core task management; Task listing and completion tracking; Email reminder system; Motivational reward system
 │   ├── utils/                     # Utility modules
@@ -171,7 +171,7 @@ supertask/                         # Root project directory
 │       └── publish.yml            # Workflow for publishing to PyPI
 │
 ├── .venv/                         # Virtual environment (not in version control)
-├── supertask.egg-info/            # Package metadata (not in version control)
+├── ZephyrTask.egg-info/            # Package metadata (not in version control)
 ├── .pytest_cache/                 # Pytest cache (not in version control)
 │
 ├── pyproject.toml                 # Project configuration (PEP 517/518)
@@ -195,7 +195,7 @@ supertask/                         # Root project directory
 
 ## Data Storage
 
-By default, tasks are stored in a JSON file at `~/.supertask_data.json`. Each task has the following structure:
+By default, tasks are stored in a JSON file at `~/.ZephyrTask_data.json`. Each task has the following structure:
 
 ```json
 {
