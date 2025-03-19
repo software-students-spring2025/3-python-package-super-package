@@ -8,7 +8,8 @@ import pytest
 from unittest.mock import patch, MagicMock
 import datetime
 import pyjokes
-from superTask.tasks import add_task, update_task, remove_task, reminder, reward
+import tempfile
+from superTask.tasks import add_task, update_task, remove_task, reminder, reward, complete, list_tasks, _get_tasks
 
 
 # Use a test file instead of the default one
@@ -494,3 +495,58 @@ class TestReward:
         # Check that the table and completed tasks heading are NOT in the content
         assert "<table" not in html_content
         assert "Your Completed Tasks" not in html_content
+
+
+@pytest.fixture
+def temp_task_file():
+    """Creates a temporary tasks file for testing."""
+    with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+        yield temp_file.name
+
+@pytest.fixture
+def setup_tasks(temp_task_file):
+    """Sets up test tasks in a temporary file."""
+    add_task("2025-03-19T12:00:00", "Lunch with team", 3, temp_task_file)
+    add_task("2025-03-25T19:40:30", "Weekly review", 8, temp_task_file)
+    add_task("2025-03-22T15:00:00", "Submit report", 5, temp_task_file)
+    return temp_task_file
+
+class TestComplete:
+    def test_complete(self, setup_tasks):
+        """Test marking a task as completed."""
+        temp_file = setup_tasks
+
+        # **1️⃣ Ensure task is NOT completed initially**
+        tasks_before = _get_tasks(temp_file)
+        assert any(task["event"] == "Lunch with team" and not task.get("completed", False) for task in tasks_before)
+
+        # **2️⃣ Mark task as completed**
+        completed_task = complete("Lunch with team", temp_file)
+
+        # **3️⃣ Ensure the task is now completed**
+        assert completed_task["completed"] is True
+
+        # **4️⃣ Reload and verify**
+        tasks_after = _get_tasks(temp_file)
+        assert any(task["event"] == "Lunch with team" and task.get("completed", False) for task in tasks_after)
+
+class TestListTasks:
+    def test_list_tasks_by_time(self, setup_tasks):
+        """Test listing tasks sorted by time."""
+        temp_file = setup_tasks
+
+        sorted_tasks = list_tasks(order_by="time", tasks_file=temp_file)
+
+        # Ensure tasks are sorted by time (earliest first)
+        times = [task["time"] for task in sorted_tasks]
+        assert times == sorted(times)
+
+    def test_list_tasks_by_value(self, setup_tasks):
+        """Test listing tasks sorted by value."""
+        temp_file = setup_tasks
+
+        sorted_tasks = list_tasks(order_by="value", tasks_file=temp_file)
+
+        # Ensure tasks are sorted by value (highest first)
+        values = [task["value"] for task in sorted_tasks]
+        assert values == sorted(values, reverse=True)
