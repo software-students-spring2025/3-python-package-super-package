@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Dict, List, Any, Optional, Union
 import smtplib
 import ssl
+import pyjokes
 from email.message import EmailMessage
 
 
@@ -322,4 +323,127 @@ def reminder(
         server.quit()
 
     print("Reminder email sent successfully.")
+
+
+def reward(
+    threshold_value: int,
+    tasks_file: Optional[str] = None,
+    to_email: str = "",
+    from_email: str = "13601583609@163.com",
+    smtp_server: str = "smtp.163.com",
+    smtp_port: int = 465,
+    login: str = "13601583609@163.com",
+    password: str = "APYDOSTDPDUOEEHQ",
+    reward_message: str = "Congratulations on reaching your goal!",
+    include_completed_tasks: bool = True,
+    include_joke: bool = True
+) -> bool:
+    """
+    Check if the total value of completed tasks meets or exceeds a threshold value,
+    and send a reward notification email if it does.
+
+    Args:
+        threshold_value:       The minimum total value required to trigger the reward.
+        tasks_file:            Path to the tasks file. Defaults to DEFAULT_TASKS_FILE.
+        to_email:              Addressee's email address.
+        from_email:            Sender's email address. Default set.
+        smtp_server:           SMTP server for sending email.
+        smtp_port:             SMTP port for sending email.
+        login:                 Login credential for SMTP server.
+        password:              Password for SMTP server.
+        reward_message:        Custom message to include in the reward email.
+        include_completed_tasks: Whether to include the list of completed tasks in the email.
+        include_joke:          Whether to include a programming joke in the email.
+
+    Returns:
+        bool: True if the reward email was sent, False otherwise.
+    """
+    tasks_file = tasks_file or DEFAULT_TASKS_FILE
+    tasks = _get_tasks(tasks_file)
     
+    # Calculate total value of completed tasks
+    completed_tasks = [task for task in tasks if task.get("completed", False) is True]
+    total_value = sum(task["value"] for task in completed_tasks)
+    
+    # If total value doesn't meet threshold, do nothing
+    if total_value < threshold_value:
+        return False
+    
+    # Get a joke if requested
+    joke = pyjokes.get_joke() if include_joke else ""
+    
+    # Build the email message
+    message = EmailMessage()
+    message["Subject"] = f"Goal Achievement Reward: {total_value} points"
+    message["From"] = from_email
+    message["To"] = to_email
+    
+    # Plain text part of the email as a backup
+    message.set_content(
+        f"Congratulations! You have reached {total_value} points, meeting your goal of {threshold_value}.\n"
+        f"{reward_message}\n\n"
+        f"{joke}\n\n" if include_joke else ""
+        "Please view the HTML part for more details."
+    )
+    
+    # HTML Format
+    # Initialize the html_content variable first
+    html_content = f"""
+    <html>
+    <body>
+    <h2>Congratulations on Your Achievement!</h2>
+    <p>You have earned a total of <b>{total_value}</b> points,
+        meeting your goal of <b>{threshold_value}</b>.</p>
+    <p>{reward_message}</p>
+    """
+
+    # Add the joke section as a separate string concatenation
+    if include_joke:
+        html_content += f"""<p><i>Here's a joke to celebrate: "{joke}"</i></p>"""
+
+    # Add completed tasks if requested
+    if include_completed_tasks and completed_tasks:
+        html_content += f"""
+    <h3>Your Completed Tasks:</h3>
+    <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse;">
+        <tr>
+        <th>Time</th>
+        <th>Event</th>
+        <th>Value</th>
+        </tr>
+        """
+    # Rest of your table content
+        
+        for task in completed_tasks:
+            html_content += f"""
+            <tr>
+              <td>{task['time']}</td>
+              <td>{task['event']}</td>
+              <td>{task['value']}</td>
+            </tr>
+            """
+            
+        html_content += """
+          </table>
+        """
+    
+    html_content += """
+    </body>
+    </html>
+    """
+    
+    message.add_alternative(html_content, subtype="html")
+    
+    # Send email
+    try:
+        context = ssl.create_default_context()
+        with smtplib.SMTP_SSL(smtp_server, smtp_port, context=context) as server:
+            server.login(login, password)
+            server.send_message(message)
+            server.quit()
+        
+        print("Reward notification email sent successfully.")
+        return True
+    except Exception as e:
+        print(f"Failed to send reward email: {e}")
+        return False

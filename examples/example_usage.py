@@ -10,7 +10,7 @@ import datetime
 import json
 import tempfile
 import os
-from superTask.tasks import add_task, update_task, remove_task, reminder
+from superTask.tasks import add_task, update_task, remove_task, reminder, reward
 
 def main():
     """
@@ -69,6 +69,43 @@ def main():
         target_email = input("Enter your email address: ")
         reminder(to_email=target_email, tasks_file=temp_tasks_file)
         print("Reminder email sent successfully!")
+
+        # Demonstrate the reward function
+        print("\nDemonstrating the reward function...")
+
+        # For demonstration, mark tasks as completed
+        with open(temp_tasks_file, 'r') as f:
+            tasks = json.load(f)
+            for task in tasks:
+                # Mark at least one task as completed for the demo
+                if task['event'] == "Lunch with team":
+                    task['completed'] = True
+            
+            # Save the modified tasks back to the file
+            with open(temp_tasks_file, 'w') as f_write:
+                json.dump(tasks, f_write, indent=2)
+
+        # Get user inputs
+        while True:
+            try:
+                reward_threshold = int(input("Enter the reward threshold value: "))
+                break  # Exit the loop if input was successfully converted to int
+            except ValueError:
+                print("Invalid input. Please enter a valid integer value.")
+
+        # Call the reward function with user inputs
+        reward_result = reward(
+            threshold_value=reward_threshold,
+            tasks_file=temp_tasks_file,
+            to_email=target_email,
+            reward_message="You've made great progress! Keep going!",
+            include_joke=True
+        )
+
+        if reward_result:
+            print(f"Reward email sent - you've reached the {reward_threshold} point threshold!")
+        else:
+            print(f"No reward sent - you haven't reached the {reward_threshold} point threshold yet.")
     
     finally:
         # Clean up the temporary file
