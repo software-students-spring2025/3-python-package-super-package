@@ -49,21 +49,21 @@ update_task("2023-06-15T09:00:00", "Morning meeting", 10)
 
 # Remove a task
 remove_task("2023-06-15T09:00:00", "Morning meeting")
+
+# Mark a task as completed
+complete("Morning meeting")
 ```
 
-### Task Listing (To be implemented by Lan)
+### Task Listing
 
 ```python
-from ZephyrTask.list import list_tasks, mark_completed
+from ZephyrTask.list import list_tasks
 
 # List all tasks sorted by time
 tasks = list_tasks(sort_by="time")
 
-# List tasks before a specific date
-upcoming_tasks = list_tasks(before="2023-07-01T00:00:00")
-
-# Mark a task as completed
-mark_completed("2023-06-15T09:00:00", "Morning meeting")
+# List all tasks sorted by value (highest first)
+tasks = list_tasks(sort_by="value")
 ```
 
 ### Reminder System (To be implemented by Yuquan)
