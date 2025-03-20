@@ -4,9 +4,11 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pyjokes = "*"
 pycowsay = "*"
+pyjokes = "*"
 supertask = {file = ".", editable = true}
+build = "*"
+twine = "*"
 
 [dev-packages]
 pytest = "*"

@@ -10,13 +10,13 @@ import datetime
 import json
 import tempfile
 import os
-from superTask.tasks import add_task, update_task, remove_task, complete, list_tasks, reminder, reward
+from ZephyrTask.tasks import add_task, update_task, remove_task, complete, list_tasks, reminder, reward
 
 def main():
     """
     Demonstrate the core functionality of the Pytask package.
     """
-    print("superTask Example - Core Task Management\n")
+    print("ZephyrTask Example - Core Task Management\n")
     
     # Create a temporary file that will be automatically deleted
     with tempfile.NamedTemporaryFile(delete=False) as temp_file:
@@ -57,6 +57,12 @@ def main():
         
         print("\nExample completed successfully!")
 
+        # Send a reminder email
+        print("\nSending reminder email...")
+        target_email = input("Enter your email address: ")
+        reminder(to_email=target_email, tasks_file=temp_tasks_file)
+        print("Reminder email sent successfully!")
+
         # Mark a Task as completed
         print("Marking a task as completed...")
         completed_task = complete("Lunch with team", temp_tasks_file)
@@ -88,26 +94,8 @@ def main():
             for task in tasks:
                 print(f"- {task['event']} at {task['time']} (value: {task['value']}, completed: {task['completed']})")
 
-        # Send a reminder email
-        print("\nSending reminder email...")
-        target_email = input("Enter your email address: ")
-        reminder(to_email=target_email, tasks_file=temp_tasks_file)
-        print("Reminder email sent successfully!")
-
         # Demonstrate the reward function
         print("\nDemonstrating the reward function...")
-
-        # For demonstration, mark tasks as completed
-        with open(temp_tasks_file, 'r') as f:
-            tasks = json.load(f)
-            for task in tasks:
-                # Mark at least one task as completed for the demo
-                if task['event'] == "Lunch with team":
-                    task['completed'] = True
-            
-            # Save the modified tasks back to the file
-            with open(temp_tasks_file, 'w') as f_write:
-                json.dump(tasks, f_write, indent=2)
 
         # Get user inputs
         while True:
