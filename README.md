@@ -74,8 +74,6 @@ tasks = list_tasks(sort_by="value")
 from ZephyrTask.tasks import reminder
 reminder(to_email=target_email, tasks_file=temp_tasks_file, deadline=48)
 
-```
-```python
 # Configure email reminders
 reminder( tasks_file: Optional[str] = None,
     to_email: str = "",
@@ -97,12 +95,17 @@ reminder( tasks_file: Optional[str] = None,
 ### Reward System 
 
 ```python
-from ZephyrTask.reward import reward
-# config on reward email sys is the same as reminder function
-# Check rewards when reaching a value threshold
-motivational_message = reward(20)
-print(motivational_message)  # Prints a joke or congratulatory message
+from ZephyrTask.tasks import reward
+
+# Configure motivational rewards
+reward_result = reward(
+    threshold_value=reward_threshold,
+    tasks_file=temp_tasks_file,
+    to_email=target_email,
+    reward_message="You've made great progress! Keep going!",
+    include_joke=True)
 ```
+
 ## Example of reward mail
 
 ![list](docs/reward.jpg)
@@ -146,28 +149,32 @@ pytest
 ## Project Structure
 
 ```
-ZephyrTask/                         # Root project directory
+3-python-package-super-package/     # Root project directory
 ├── ZephyrTask/                     # Main package source code
-│   ├── __init__.py                # Package initialization and exports
-│   ├── tasks.py                   # Core task management; Task listing   and completion tracking; Email reminder system; Motivational reward system
+│   ├── __init__.py                 # Package initialization and exports
+│   ├── tasks.py                    # Core task management; Task listing and completion tracking; Email reminder system; Motivational reward system
 │
-├── tests/                         # Test directory
-│   ├── __init__.py                # Test package initialization
-│   ├── test_tasks.py              # Tests for tasks module            # 
+├── tests/                          # Test directory
+│   ├── __init__.py                 # Test package initialization
+│   ├── test_tasks.py               # Tests for tasks module
 │
-├── examples/                      # Example scripts
-│   ├── example_usage.py             # Basic package usage examples
+├── examples/                       # Example scripts
+│   ├── example_usage.py            # Basic package usage examples
 │
-├── .github/                       # GitHub specific files
-│   └── workflows/                 # GitHub Actions workflows
-│       ├── python-package.yml     # CI workflow for testing and building
-│       └── publish.yml            # Workflow for publishing to PyPI
-├── pyproject.toml                 # Project configuration (PEP 517/518)
-├── Pipfile                        # Pipenv dependency management
-├── Pipfile.lock                   # Locked dependencies (ensure reproducibility)
-├── README.md                      # Project documentation
-├── LICENSE                        # License information
-└── .gitignore                     # Git ignore patterns
+│-- docs/                           # Documentation files
+│   ├── mail.jpg                    # Example of reminder mail
+│   └── reward.jpg                  # Example of reward mail
+│
+├── .github/                        # GitHub specific files
+│   └── workflows/                  # GitHub Actions workflows
+│       ├── python-package.yml      # CI workflow for testing and building
+│       └── event-logger.yml        # CI workflow for logging events
+├── pyproject.toml                  # Project configuration (PEP 517/518)
+├── Pipfile                         # Pipenv dependency management
+├── Pipfile.lock                    # Locked dependencies (ensure reproducibility)
+├── README.md                       # Project documentation
+├── LICENSE                         # License information
+└── .gitignore                      # Git ignore patterns
 ```
 
 ### Key Modules
